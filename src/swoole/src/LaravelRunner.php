@@ -39,5 +39,7 @@ class LaravelRunner implements RunnerInterface
 
         $sfResponse = $this->application->handle($sfRequest);
         SymfonyHttpBridge::reflectSymfonyResponse($sfResponse, $response);
+
+        $this->application->terminate($sfRequest, $sfResponse);
     }
 }
