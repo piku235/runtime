@@ -4,6 +4,7 @@ namespace Runtime\Swoole\Tests\Unit;
 
 use Runtime\Swoole\SymfonyHttpBridge;
 use PHPUnit\Framework\TestCase;
+use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -13,6 +14,22 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  */
 class SymfonyHttpBridgeTest extends TestCase
 {
+    public function testThatSwooleRequestIsConverted(): void
+    {
+        $request = $this->createMock(Request::class);
+        $request->server = [];
+        $request->header = [];
+        $request->cookie = [];
+        $request->get = [];
+        $request->post = [];
+        $request->files = [];
+
+        $request->expects(self::once())->method('rawContent')->willReturn('');
+
+        $sfRequest = SymfonyHttpBridge::convertSwooleRequest($request);
+        // todo: complete
+    }
+
     public function testThatSymfonyResponseIsReflected(): void
     {
         $sfResponse = $this->createMock(SymfonyResponse::class);
