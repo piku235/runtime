@@ -11,7 +11,6 @@ use Runtime\Swoole\ServerFactory;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
-use Symfony\Component\HttpFoundation\HeaderBag;
 
 class LaravelRunnerTest extends TestCase
 {
@@ -32,23 +31,12 @@ class LaravelRunnerTest extends TestCase
 
     public function testHandle(): void
     {
-        $sfResponse = $this->createMock(\Symfony\Component\HttpFoundation\Response::class);
-        $sfResponse->headers = new HeaderBag(['X-Test' => 'Swoole-Runtime']);
-        $sfResponse->expects(self::once())->method('getStatusCode')->willReturn(201);
-        $sfResponse->expects(self::once())->method('getContent')->willReturn('Test');
-
         $application = $this->createMock(Kernel::class);
-        $application->expects(self::once())->method('handle')->willReturn($sfResponse);
-
-        $request = $this->createMock(Request::class);
-        $request->header = [];
-
-        $response = $this->createMock(Response::class);
-        $response->expects(self::once())->method('header')->with('x-test', 'Swoole-Runtime');
-        $response->expects(self::once())->method('status')->with(201);
-        $response->expects(self::once())->method('end')->with('Test');
+        $application->expects(self::once())->method('handle');
 
         $factory = $this->createMock(ServerFactory::class);
+        $request = $this->createMock(Request::class);
+        $response = $this->createMock(Response::class);
 
         $runner = new LaravelRunner($factory, $application);
         $runner->handle($request, $response);

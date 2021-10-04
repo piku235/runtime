@@ -49,13 +49,6 @@ class SymfonyRunner implements RunnerInterface
         $sfRequest->headers = new HeaderBag($request->header);
 
         $sfResponse = $this->application->handle($sfRequest);
-        foreach ($sfResponse->headers->all() as $name => $values) {
-            foreach ($values as $value) {
-                $response->header($name, $value);
-            }
-        }
-
-        $response->status($sfResponse->getStatusCode());
-        $response->end($sfResponse->getContent());
+        SymfonyHttpBridge::reflectSymfonyResponse($sfResponse, $response);
     }
 }
