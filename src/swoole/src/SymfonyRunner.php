@@ -5,6 +5,7 @@ namespace Runtime\Swoole;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\TerminableInterface;
 use Symfony\Component\Runtime\RunnerInterface;
 
 /**
@@ -38,5 +39,9 @@ class SymfonyRunner implements RunnerInterface
 
         $sfResponse = $this->application->handle($sfRequest);
         SymfonyHttpBridge::reflectSymfonyResponse($sfResponse, $response);
+
+        if ($this->application instanceof TerminableInterface) {
+            $this->application->terminate($sfRequest, $sfResponse);
+        }
     }
 }
